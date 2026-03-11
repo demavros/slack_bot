@@ -7,3 +7,4 @@ slack==0.0.2
 urllib3==2.3.0
 slack_sdk==3.34.0
 slackclient==2.9.4
+discord.py

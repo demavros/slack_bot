@@ -1,7 +1,7 @@
 import requests
 import time
 
-def forces_stat(usernames):
+def forces_stat(usernames, msg="\nTo appear on the leaderboard, please `reply to this message with your codeforces username`. Congratulations to everyone who has already submitted their usernames—keep up the great work and keep improving your Coding and Math skills! `Happy Coding!` 👩‍💻👨‍💻\n"):
     users_data = []
     leaderboard = []
 #   leaderboard.append("Username       | wpm | acc | secs|")
@@ -60,5 +60,5 @@ def forces_stat(usernames):
     result += "```\n" 
     result += "\n".join(leaderboard)
     result += "\n```" 
-    result +="\nTo appear on the leaderboard, please `reply to this message with your codeforces username`. Congratulations to everyone who has already submitted their usernames—keep up the great work and keep improving your Coding and Math skills! `Happy Coding!` 👩‍💻👨‍💻\n"
+    result +=msg
     return result

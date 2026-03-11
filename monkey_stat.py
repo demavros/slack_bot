@@ -1,7 +1,9 @@
 import requests
 import time
 
-def monkey_stat(usernames):
+def monkey_stat(usernames, 
+                msg="\nTo appear on the leaderboard, please `reply to this message with your Monkeytype username`. Congratulations to everyone who has already submitted their usernames—keep up the great work and keep improving your typing speed! `Happy Typing!` ⌨️ \n"
+    ):
     users_data = []
     leaderboard = []
     leaderboard.append("Username        | wpm | acc | secs|")
@@ -78,5 +80,5 @@ def monkey_stat(usernames):
     result += "```\n" 
     result += "\n".join(leaderboard)
     result += "\n```" 
-    result += "\nTo appear on the leaderboard, please `reply to this message with your Monkeytype username`. Congratulations to everyone who has already submitted their usernames—keep up the great work and keep improving your typing speed! `Happy Typing!` ⌨️ \n"
+    result += msg
     return result
