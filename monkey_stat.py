@@ -1,7 +1,7 @@
 import requests
-import time
+import asyncio
 
-def monkey_stat(usernames, 
+async def monkey_stat(usernames, 
                 msg="\nTo appear on the leaderboard, please `reply to this message with your Monkeytype username`. Congratulations to everyone who has already submitted their usernames—keep up the great work and keep improving your typing speed! `Happy Typing!` ⌨️ \n"
     ):
     users_data = []
@@ -43,7 +43,7 @@ def monkey_stat(usernames,
                     if retry_count < max_retries:
                         wait_time = 5 * (2 ** (retry_count - 1))  # Exponential backoff: 5, 10, 20 seconds
                         print(f"Rate limited (429) for {username}. Retry {retry_count}/{max_retries}. Waiting {wait_time} seconds...")
-                        time.sleep(wait_time)
+                        await asyncio.sleep(wait_time)
                     else:
                         print(f"Error: Rate limited (429) for {username}. Max retries exceeded.")
                 else:
@@ -66,7 +66,7 @@ def monkey_stat(usernames,
                 break
         
         # Add delay between requests to avoid rate limiting
-        time.sleep(3)
+        await asyncio.sleep(3)
 
     # Sort users by typing speed in descending order for ranking
     sorted_users = sorted(users_data, key=lambda x: (x[1], x[2]), reverse=True)
@@ -79,6 +79,33 @@ def monkey_stat(usernames,
     result = "🏆      `TYPING SPEED LEADERBOARD`      🏆\n\n"
     result += "```\n" 
     result += "\n".join(leaderboard)
-    result += "\n```" 
+    result += "\n```\n"
     result += msg
-    return result
+    
+    # Split into chunks if exceeding 2000 character limit
+    if len(result) <= 2000:
+        return result
+    
+    # Split while keeping code blocks intact
+    messages = []
+    lines = leaderboard[:]  # Copy leaderboard lines
+    
+    # First message: header + first batch of rows
+    current_msg = "🏆      `TYPING SPEED LEADERBOARD`      🏆\n\n```\n"
+    current_msg += "\n".join(lines[:2])  # Add header lines
+    
+    for line in lines[2:]:
+        test_msg = current_msg + "\n" + line + "\n```"
+        if len(test_msg) <= 1900:  # Leave room for closing ```
+            current_msg += "\n" + line
+        else:
+            # Current message is full, close it and start a new one
+            current_msg += "\n```"
+            messages.append(current_msg)
+            current_msg = "```\n" + line
+    
+    # Close the last message
+    current_msg += "\n```\n" + msg
+    messages.append(current_msg)
+    
+    return messages
